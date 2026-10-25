@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroLens — AI Macro-Journal & Taxonomy</title>
+    <link rel="stylesheet" href="/css/glass.css">
+    <!-- html2canvas for 1-click Polaroid Field Card export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="brand-title">
+            🔬 Micro<span>Lens</span>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">
+            Insect & Flora Macro-Journal • Vectorized NumPy Engine
+        </div>
+    </header>
+
+    <main class="workspace-grid">
+        <!-- Left Panel: Uploader & Metadata Editor -->
+        <section class="glass-panel">
+            <div class="drop-zone" id="dropZone">
+                <input type="file" id="fileInput" accept="image/*" hidden>
+                <p style="font-size: 1.05rem; font-weight: 600; margin-bottom: 6px;">
+                    📷 Drop your Macro Shot here or <span style="color: var(--neon-accent); text-decoration: underline;">Browse</span>
+                </p>
+                <p style="font-size: 0.8rem; color: var(--text-muted);" id="uploadStatus">
+                    Automatically extracts EXIF metadata, 5-color NumPy palette & taxonomy
+                </p>
+            </div>
+
+            <form id="specimenForm" class="form-grid">
+                <div class="input-group">
+                    <label>Common Name</label>
+                    <input type="text" id="commonName" class="glow-input" value="Jumping Spider" required>
+                </div>
+                <div class="input-group">
+                    <label>Scientific Name</label>
+                    <input type="text" id="scientificName" class="glow-input" value="Salticidae sp." required>
+                </div>
+                <div class="input-group">
+                    <label>Family / Clade</label>
+                    <input type="text" id="taxonomyFamily" class="glow-input" value="Salticidae">
+                </div>
+                <div class="input-group">
+                    <label>Category</label>
+                    <select id="category" class="glow-input">
+                        <option value="Arachnid">Arachnid</option>
+                        <option value="Insect">Insect</option>
+                        <option value="Flora">Flora</option>
+                        <option value="Reptile">Reptile</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <!-- EXIF Overrides -->
+                <div class="input-group">
+                    <label>Camera / Lens</label>
+                    <input type="text" id="cameraModel" class="glow-input" value="Macro 100mm">
+                </div>
+                <div class="input-group">
+                    <label>Shutter Speed</label>
+                    <input type="text" id="shutterSpeed" class="glow-input" value="1/250s">
+                </div>
+                <div class="input-group">
+                    <label>Aperture</label>
+                    <input type="text" id="aperture" class="glow-input" value="f/2.8">
+                </div>
+                <div class="input-group">
+                    <label>ISO</label>
+                    <input type="text" id="iso" class="glow-input" value="200">
+                </div>
+
+                <div class="input-group full-width">
+                    <label>Field Observation Notes</label>
+                    <input type="text" id="notes" class="glow-input" placeholder="Captured on a wet leaf after morning dew...">
+                </div>
+            </form>
+
+            <div class="btn-row">
+                <button type="button" id="saveBtn" class="btn btn-primary">💾 Save to Field Journal</button>
+                <button type="button" id="exportBtn" class="btn btn-secondary">🖼️ Export Polaroid PNG</button>
+            </div>
+        </section>
+
+        <!-- Right Panel: Live Field Card Generator -->
+        <section>
+            <div class="field-card" id="fieldCard">
+                <div class="card-image-wrap">
+                    <img id="previewImage" src="https://images.unsplash.com/photo-1557180295-76eee20ae8aa?auto=format&fit=crop&w=800&q=80" crossorigin="anonymous" alt="Macro Preview">
+                    <span class="category-badge" id="cardCategory">Arachnid</span>
+                </div>
+
+                <!-- 5-Color Hex Strip -->
+                <div class="palette-strip" id="paletteStrip">
+                    <div class="palette-swatch" style="background: #2b4c1c">#2b4c1c</div>
+                    <div class="palette-swatch" style="background: #558b2f">#558b2f</div>
+                    <div class="palette-swatch" style="background: #9ccc65">#9ccc65</div>
+                    <div class="palette-swatch" style="background: #795548">#795548</div>
+                    <div class="palette-swatch" style="background: #d7ccc8">#d7ccc8</div>
+                </div>
+
+                <div class="card-meta-header">
+                    <div class="card-common-name" id="cardCommon">Jumping Spider</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);" id="cardFamily">Salticidae</div>
+                </div>
+                <div class="card-scientific-name" id="cardScientific">Salticidae sp.</div>
+
+                <div class="exif-bar">
+                    <div class="exif-item"><span>LENS</span><strong id="cardCamera">Macro 100mm</strong></div>
+                    <div class="exif-item"><span>SHUTTER</span><strong id="cardShutter">1/250s</strong></div>
+                    <div class="exif-item"><span>APERTURE</span><strong id="cardAperture">f/2.8</strong></div>
+                    <div class="exif-item"><span>ISO</span><strong id="cardIso">200</strong></div>
+                </div>
+
+                <p id="cardNotes" style="font-size: 0.78rem; color: #a7f3d0; margin-top: 12px; font-style: italic;">
+                    "Captured on a wet leaf after morning dew..."
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Catalog Gallery -->
+    <section class="gallery-section">
+        <h2 style="font-size: 1.3rem; font-weight: 700;">📂 Cataloged Macro Specimens</h2>
+        <div class="gallery-grid" id="galleryGrid"></div>
+    </section>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
